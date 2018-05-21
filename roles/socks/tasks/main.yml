@@ -1,0 +1,4 @@
+---
+
+- name: Touch file
+  command: "touch ~/tmp.txt"
