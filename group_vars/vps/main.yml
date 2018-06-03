@@ -1,0 +1,7 @@
+---
+container_name: "dante_debian_c"
+image_name: "dante_debian_i"
+app_dir: "dante"
+dante_user: "ps"
+dante_port: 2080
+dante_ssl_port: 443

@@ -1,0 +1,31 @@
+---
+- name: "Stop container"
+  shell: "docker stop {{ container_name }}"
+  register: out
+  failed_when: "out.rc == 1 and 'No such container' not in out.stderr"
+  changed_when: "out.rc == 0"
+
+- name: "Remove container"
+  shell: "docker rm {{ container_name }}"
+  register: out
+  failed_when: "out.rc == 1 and 'No such container' not in out.stderr"
+  changed_when: "out.rc == 0"
+
+- name: "Remove image"
+  shell: "docker rmi {{ image_name }}"
+  register: out
+  failed_when: "out.rc == 1 and 'No such image' not in out.stderr"
+  changed_when: "out.rc == 0"
+
+- name: "Clear dangling Docker objects"
+  shell: "docker system prune -f"
+  register: out
+  changed_when: "'Total reclaimed space: 0 B' not in out.stdout"
+
+- name: "Remove app dir"
+  file:
+    path: "~/{{ app_dir }}"
+    state: "absent"
+
+- import_tasks: "clear_soft.yml"
+  when: clear_soft | default(true)

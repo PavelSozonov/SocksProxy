@@ -1,0 +1,13 @@
+---
+version: '2'
+services:
+  dante:
+    build: .
+    image: "{{ image_name }}"
+    ports:
+     - "{{ dante_port }}:1080"
+     - "{{ dante_ssl_port }}:1080"
+    volumes:
+      - ./sockd.conf:/etc/sockd.conf
+    restart: always
+    container_name: "{{ container_name }}"
