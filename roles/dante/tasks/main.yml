@@ -4,26 +4,26 @@
 
 - name: "Create dir"
   file:
-    path: "~/{{ app_dir }}"
+    path: "~/{{ dante_app_dir }}"
     state: "directory"
 
 - name: "Copy files"
   copy:
     src: "{{ item }}"
-    dest: "~/{{ app_dir }}/{{ item }}"
+    dest: "~/{{ dante_app_dir }}/{{ item }}"
   with_items:
     - "sockd.conf"
 
 - name: "Copy templates"
   template:
     src: "{{ item }}.j2"
-    dest: "{{ app_dir }}/{{ item }}"
+    dest: "{{ dante_app_dir }}/{{ item }}"
   no_log: true
   with_items:
     - "Dockerfile"
     - "docker-compose.yml"
 
-- name: "Run container"
+- name: "Compose and run container"
   shell: "docker-compose up -d"
   args:
-    chdir: "~/{{ app_dir }}"
+    chdir: "~/{{ dante_app_dir }}"

@@ -24,7 +24,7 @@
 
 - name: "Remove app dir"
   file:
-    path: "~/{{ app_dir }}"
+    path: "~/{{ dante_app_dir }}"
     state: "absent"
 
 - import_tasks: "clear_soft.yml"
