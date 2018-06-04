@@ -1,0 +1,24 @@
+---
+- import_tasks: "prepare_host.yml"
+  when: prepare_host | default(true)
+
+- name: "Create dir"
+  file:
+    path: "~/{{ openvpn_app_dir }}"
+    state: "directory"
+
+- name: "Create container"
+  shell: "docker create --name=openvpn-as -v ~/{{ openvpn_app_dir }}:/config -e PGID=20 -e PUID=501 -e TZ=Europe/Moscow -e INTERFACE=eth0 --net=host --privileged linuxserver/openvpn-as"
+  register: out
+  changed_when: "'is already in use by container' not in out.stderr"
+  failed_when: "(out.rc == 1 and 'is already in use by container' not in out.stderr) or (out.rc != 1 and out.rc != 0)"
+
+- name: "Check if container is started"
+  shell: "docker ps | grep openvpn-as | nl | awk '{print $1}'"
+  register: out
+  changed_when: false
+
+- name: "Start container"
+  shell: "docker start openvpn-as"
+  when: "'1' not in out.stdout"
+  changed_when: true
